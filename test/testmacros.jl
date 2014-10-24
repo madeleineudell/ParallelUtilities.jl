@@ -8,24 +8,24 @@ if verbose println("done") end
 
 # assertion fails for non-shared matrices, eg if A = zeros(n,n)
 
-niters = 10
+niters = 100
 
 println("testing parallel repeat")
 @time begin
     @sync begin
-        @parallel_repeat 10 for i=1:n
+        @parallel_repeat niters for i=1:n
             A[:,i] += 1
         end
     end
 end
 
-@assert(A[5,5] == 10)
-@assert(A[5,10] == 10)
+@assert(A[5,5] == niters)
+@assert(A[5,10] == niters)
 
 println("testing parallel alternate")
 @time begin
     @sync begin
-        @parallel_alternate(10, 
+        @parallel_alternate(niters, 
             for i=1:n
                 A[i,:] += i
             end,
@@ -36,5 +36,5 @@ println("testing parallel alternate")
     end
 end
 
-@assert(A[5,5] == 110)
-@assert(A[5,10] == 160)
+@assert(A[5,5] == 10*niters + niters)
+@assert(A[5,10] == 15*niters + niters)

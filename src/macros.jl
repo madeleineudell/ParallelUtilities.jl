@@ -29,7 +29,7 @@ macro parallel_repeat(niters, loop::Expr)
     r = loop.args[1].args[2]
     body = loop.args[2]
     quote
-        pfor_ntimes($(Base.localize_vars(niters)), 
+        pfor_ntimes($(esc(niters)), 
                     $(Base.make_pfor_body(var, body, r)), length($(esc(r))))
     end
 end
@@ -45,7 +45,7 @@ macro parallel_alternate(niters, loop1::Expr, loop2::Expr)
     r2 = loop2.args[1].args[2]
     body2 = loop2.args[2]
     quote
-        pfor_ntimes($(Base.localize_vars(niters)),
+        pfor_ntimes($(esc(niters)),
                     $(Base.make_pfor_body(var1, body1, r1)), length($(esc(r1))),
                     $(Base.make_pfor_body(var2, body2, r2)), length($(esc(r2))))
     end
