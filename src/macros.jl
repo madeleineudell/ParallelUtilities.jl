@@ -21,14 +21,8 @@ function pfor_ntimes(niters::Int, f1, N1::Int, f2, N2::Int)
     nothing
 end 
 
-macro parallel_repeat(niters, args...)
-    na = length(args)
-    if na==1
-        loop = args[1]
-    else
-        throw(ArgumentError("wrong number of arguments to @parallel_repeat"))
-    end
-    if !isa(loop,Expr) || !is(loop.head,:for)
+macro parallel_repeat(niters, loop::Expr)
+    if !is(loop.head,:for)
         error("malformed @parallel_repeat loop")
     end
     var = loop.args[1].args[1]
@@ -41,8 +35,7 @@ macro parallel_repeat(niters, args...)
 end
 
 macro parallel_alternate(niters, loop1::Expr, loop2::Expr)
-    loops = [loop1, loop2]
-    if !all([isa(loop,Expr) for loop in loops]) || !all([is(loop.head,:for) for loop in loops])
+    if !all([is(loop.head,:for) for loop in [loop1, loop2]])
         error("malformed @parallel_alternate loop")
     end
     var1 = loop1.args[1].args[1]

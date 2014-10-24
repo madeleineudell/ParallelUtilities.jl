@@ -36,7 +36,5 @@ println("testing parallel alternate")
     end
 end
 
-println(A[5,5]) # niters*(5+5)
-println(A[5,10]) # niters*(5+10)
 @assert(A[5,5] == 110)
 @assert(A[5,10] == 160)
